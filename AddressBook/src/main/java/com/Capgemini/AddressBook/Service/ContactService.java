@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-
 @Service
 public class ContactService {
 
@@ -27,14 +25,44 @@ public class ContactService {
         return dto;
     }
 
-    // Get all contacts as DTOs
+    // Get all contacts (returns DTOs)
     public List<ContactDTO> getAllContacts() {
-        List<Contact> contacts = contactRepository.findAll();
-        return contacts.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return contactRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    // Save contact
+    // Add a new contact
     public Contact saveContact(Contact contact) {
         return contactRepository.save(contact);
+    }
+
+    // Get contact by ID
+    public ContactDTO getContactById(Long id) {
+        Contact contact = contactRepository.findById(id).orElse(null);
+        return (contact != null) ? convertToDTO(contact) : null;
+    }
+
+    // Update contact by ID
+    public Contact updateContact(Long id, Contact updatedContact) {
+        Contact existingContact = contactRepository.findById(id).orElse(null);
+        if (existingContact != null) {
+            existingContact.setName(updatedContact.getName());
+            existingContact.setPhone(updatedContact.getPhone());
+            existingContact.setEmail(updatedContact.getEmail());
+            existingContact.setAddress(updatedContact.getAddress());
+            return contactRepository.save(existingContact);
+        }
+        return null;
+    }
+
+    // Delete contact by ID
+    public boolean deleteContact(Long id) {
+        if (contactRepository.existsById(id)) {
+            contactRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
