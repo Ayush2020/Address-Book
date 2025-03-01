@@ -17,7 +17,7 @@ public class ContactController {
     private ContactService contactService;
 
     // Get all contacts
-    @GetMapping("/get/All")
+    @GetMapping
     public ResponseEntity<List<ContactDTO>> getAllContacts() {
         return ResponseEntity.ok(contactService.getAllContacts());
     }
